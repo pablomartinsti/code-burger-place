@@ -2,12 +2,14 @@ const express = require('express')/*importaçao da biblioteca express*/
 
 const uuid = require('uuid')/*importaçao da biblioteca uuid*/
 
-const port = 3000 /* criei uma variavel da minha porta se eu precisar altera fica mais facil */
+const cors = require ('cors')
+
+const port = 3001 /* criei uma variavel da minha porta se eu precisar altera fica mais facil */
 
 const app = express() /*para facilitar o uso do express criamos uma varialvel */
 
 app.use(express.json())/*informando o padrao usado para express sem colocar antes das rotas */
-
+app.use (cors())
 
 const orders = [] /* varial para armazenar meu array*/
 
@@ -39,11 +41,11 @@ const urlMethod = (request, response ,next) =>{
 
 /*criando uma rota do tipo post */
 app.post('/order',urlMethod, (request, response) => {
-    const { orde, clientName, price } = request.body/* quando a chave e o valor tem o mesmo nome o express intendi o codigo dessa forma */
+    const { orde, clientName } = request.body/* quando a chave e o valor tem o mesmo nome o express intendi o codigo dessa forma */
 
     const status = "Em Preparação" /* criei uma variavel com o e status do pedido*/
 
-    const order = { id: uuid.v4(), orde, clientName, price, status }  /* incluindo o id e status no pedido*/
+    const order = { id: uuid.v4(), orde, clientName,  status }  /* incluindo o id e status no pedido*/
 
 
     orders.push(order) /* colocando o pedido no meu array*/
@@ -64,7 +66,7 @@ app.get('/order', urlMethod, (request, response) => {
 /*criando uma rota do tipo get */
 app.put('/order/:id',checkOrders, urlMethod, (request, response) => {
     
-    const { orde, clientName, price } = request.body  /*pegando as informações do pedido*/
+    const { orde, clientName } = request.body  /*pegando as informações do pedido*/
 
     const id = request.orderId /*varialvel com as informaçoes do meu id vindo atraves do meu middlewares pelo request  */
 
@@ -73,7 +75,7 @@ app.put('/order/:id',checkOrders, urlMethod, (request, response) => {
     
 
     const status = "Em Preparação"  /* incluindo o status do pedido*/
-    const changeOrder = { id, orde, clientName, price, status } /*incluindo  atualizado do pedido*/
+    const changeOrder = { id, orde, clientName,  status } /*incluindo  atualizado do pedido*/
 
     
     orders[index] = changeOrder /* pedido atualizado */
@@ -116,7 +118,7 @@ app.patch('/order/:id',checkOrders, urlMethod, (request, response) => {
 
     const orderReady = {
         id, orde: orders[index].orde, clientName: orders[index].clientName,
-        price: orders[index].price, status: "Pronto"
+        status: "Pronto"
     } /* variavel para mudar o status do pedido */
 
     orders[index] = orderReady  
